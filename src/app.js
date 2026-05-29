@@ -25,6 +25,7 @@ app.use((req, res) => {
 
 app.use((error, req, res, next) => {
   const statusCode = error.statusCode || 500;
+  // console.log(...error.message);
   res.status(statusCode).json({
     success: false,
     message: error.message || "Internal server error (from: GEH)",
