@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     min: [6, "Password contains atleast 6 charecters"],
   },
-});
+},{timestamps:true});
 
 userSchema.pre("save", function () {
   if (!this.isModified("password")) return;
@@ -27,3 +27,8 @@ userSchema.pre("save", function () {
 userSchema.method.comparePassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
+
+
+const UserModel = mongoose.model("User",userSchema)
+
+export default UserModel
