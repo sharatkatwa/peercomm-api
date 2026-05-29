@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     min: [6, "Password contains atleast 6 charecters"],
   },
+  active:{
+    type:Boolean,
+    default:true
+  }
 },{timestamps:true});
 
 userSchema.pre("save", function () {
