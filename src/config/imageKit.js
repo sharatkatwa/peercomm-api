@@ -1,14 +1,15 @@
-import ImageKit from "@imagekit/nodejs";
+import Imagekit from "@imagekit/nodejs";
 
-const imagekitInstance = new ImageKit({
-  privateKey: process.env.IMAGEKIT_PRIVATE,
-  publicKey: process.env.IMAGEKIT_PUBLIC,
-  urlEndpoint: process.env.IMAGEKIT_ENDPOINT,
+
+const imagekitInstance = new Imagekit({
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
 });
 
 const uploadToImagekit = async (file, userId) => {
   return await imagekitInstance.files.upload({
-    file: await ImageKit.toFile(file.buffer, file.originalname),
+    file: await Imagekit.toFile(file.buffer, file.originalname),
     fileName: `product-${userId}-${Date.now()}`,
     folder: "/peerCommerce/products",
   });
