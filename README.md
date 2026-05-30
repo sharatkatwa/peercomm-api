@@ -143,8 +143,8 @@ Unknown routes return:
 | GET | `/api/products` | No | Get all products, optionally filtered by category |
 | GET | `/api/products/my` | Yes | Get products created by logged-in user |
 | GET | `/api/products/:id` | No | Get one product by id |
-| PUT | `/api/products/:id` | Yes | Update product details |
-| DELETE | `/api/products/:id` | Yes | Delete product by id |
+| PUT | `/api/products/:id` | Yes | Update a product for the logged-in user |
+| DELETE | `/api/products/:id` | Yes | Delete a product for the logged-in user |
 
 ## Root API
 
@@ -545,7 +545,7 @@ Possible errors:
 
 ### PUT `/api/products/:id`
 
-Updates a product by id. If new images are provided, they replace the existing image list.
+Updates a product by id for the logged-in user. If new images are provided, they replace the existing image list.
 
 Protected: Yes
 
@@ -606,12 +606,12 @@ Possible errors:
 | 400 | Invalid product id |
 | 400 | Validation failed |
 | 401 | Missing or invalid token |
-| 404 | Product not found |
+| 404 | Product not found for the logged-in user |
 | 500 | ImageKit upload or database error |
 
 ### DELETE `/api/products/:id`
 
-Deletes a product by id.
+Deletes a product by id for the logged-in user.
 
 Protected: Yes
 
@@ -643,7 +643,7 @@ Possible errors:
 | --- | --- |
 | 400 | Invalid product id |
 | 401 | Missing or invalid token |
-| 404 | Product not found |
+| 404 | Product not found for the logged-in user |
 
 ## Data Models
 
@@ -721,8 +721,8 @@ GET /api/products/:id
 3. Create a product using `POST /api/products` with multipart form-data.
 4. Fetch public products using `GET /api/products`.
 5. Fetch your own products using `GET /api/products/my`.
-6. Update a product using `PUT /api/products/:id`.
-7. Delete a product using `DELETE /api/products/:id`.
+6. Update one of your products using `PUT /api/products/:id`.
+7. Delete one of your products using `DELETE /api/products/:id`.
 
 ## Notes For API Clients
 
@@ -737,6 +737,6 @@ GET /api/products/:id
 
 ## Known Implementation Notes
 
-- Product ownership is not checked during update or delete. Any authenticated user can currently update or delete any product if they know the id.
 - The current controller intends to validate MongoDB ObjectIds, but the `isValid` calls should pass the `id` value.
+- Update and delete now try to find the product using the route id and the logged-in user's email before changing data.
 - The update product controller uses image replacement logic, but the image array reassignment and `user` reference need correction before image updates work reliably.
