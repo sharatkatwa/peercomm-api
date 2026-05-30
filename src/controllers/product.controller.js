@@ -92,7 +92,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       req.files.map((file) => uploadToImagekit(file, user._id)),
     );
   }
-  const product = await ProductModel.findById(id);
+  const product = await ProductModel.find({id,email:req.user.email});
   if (!product) throw new appError(404, "product not found");
 
   product.name = name;
@@ -114,7 +114,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid())
     throw new appError(400, "invalid prodcut ID");
 
-  const product = await ProductModel.findById(id);
+  const product = await ProductModel.find({id,email:req.user.email});
   if (!product) throw new appError(404, "Product not found");
 
   await ProductModel.findByIdAndDelete(id);
