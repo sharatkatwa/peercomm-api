@@ -8,11 +8,12 @@ const imagekitInstance = new Imagekit({
 });
 
 const uploadToImagekit = async (file, userId) => {
-  return await imagekitInstance.files.upload({
+  const uploaded= await imagekitInstance.files.upload({
     file: await Imagekit.toFile(file.buffer, file.originalname),
     fileName: `product-${userId}-${Date.now()}`,
     folder: "/peerCommerce/products",
   });
+  return uploaded.url
 };
 
 export { imagekitInstance, uploadToImagekit };

@@ -2,7 +2,8 @@ import { Router } from "express";
 import {
   createProduct,
   deleteProduct,
-  getAllProdcuts,
+  getAllProducts,
+  getMyProdcuts,
   getSingleProduct,
   updateProduct,
 } from "../controllers/product.controller.js";
@@ -21,9 +22,10 @@ router.post(
   validate,
   createProduct,
 );
-router.get("/", getAllProdcuts);
+router.get("/", getAllProducts);
+router.get("/my", authMiddleware, getMyProdcuts);
 router.get("/:id", getSingleProduct);
-router.put("/:id", updateProduct);
-router.delete("/", deleteProduct);
+router.put("/:id",authMiddleware, updateProduct);
+router.delete("/:id",authMiddleware, deleteProduct);
 
 export default router;
