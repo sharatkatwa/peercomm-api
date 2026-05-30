@@ -33,6 +33,7 @@ const productSchema = new mongoose.Schema(
           "Others",
         ],
       },
+      default:"Others"
     },
     images: [
       {
@@ -40,6 +41,11 @@ const productSchema = new mongoose.Schema(
         trim: true,
       },
     ],
+    seller:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"User",
+      required:true
+    }
   },
   { timestamps: true },
 );

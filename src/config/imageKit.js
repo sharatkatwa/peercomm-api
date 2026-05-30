@@ -13,3 +13,5 @@ const uploadToImagekit = async (file, userId) => {
     folder: "/peerCommerce/products",
   });
 };
+
+export { imagekitInstance, uploadToImagekit };
