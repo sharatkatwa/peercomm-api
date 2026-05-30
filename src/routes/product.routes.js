@@ -14,6 +14,7 @@ import upload from "../middlewares/upload.middleware.js";
 
 const router = Router();
 
+// Create a product for the authenticated seller, accepting up to 5 images.
 router.post(
   "/",
   authMiddleware,
@@ -25,10 +26,12 @@ router.post(
 
 router.get("/", getAllProducts);
 
+// Authenticated seller inventory.
 router.get("/my", authMiddleware, getMyProdcuts);
 
 router.get("/:id", getSingleProduct);
 
+// Update product details and optionally replace its images.
 router.put(
   "/:id",
   authMiddleware,
@@ -38,6 +41,7 @@ router.put(
   updateProduct,
 );
 
+// Delete a product by id; auth middleware ensures the requester is logged in.
 router.delete("/:id", authMiddleware, deleteProduct);
 
 export default router;

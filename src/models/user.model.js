@@ -25,12 +25,14 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+// Hash the password whenever it is first set or later changed.
 userSchema.pre("save", function () {
   if (!this.isModified("password")) return;
 
   this.password = bcrypt.hashSync(this.password, 10);
 });
 
+// Compare login input against the stored bcrypt hash.
 userSchema.methods.comparePassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };

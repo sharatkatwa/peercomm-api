@@ -1,5 +1,6 @@
 import { body } from "express-validator";
 
+// Shared product rules used before create and update controller actions.
 export const productValidators = [
   body("name")
     .notEmpty()
@@ -18,6 +19,7 @@ export const productValidators = [
     .withMessage("price should be atleast 1"),
   body("category")
     .optional()
+    // Keep categories aligned with the Product schema enum.
     .isIn([
       "Electronics",
       "Fashion",

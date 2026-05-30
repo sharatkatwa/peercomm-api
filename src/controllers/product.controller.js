@@ -8,6 +8,7 @@ const createProduct = asyncHandler(async (req, res) => {
   const { name, description, price, category } = req.body;
   const user = req.user;
 
+  // Upload each in-memory multer file to ImageKit before storing product data.
   const images = await Promise.all(
     req.files.map((file) => uploadToImagekit(file, user._id)),
   );
@@ -19,6 +20,8 @@ const createProduct = asyncHandler(async (req, res) => {
     images,
     seller: user._id,
   });
+
+  // Return seller contact basics with the newly created product response.
   const populateProduct = await ProductModel.findById(newProduct._id).populate(
     "seller",
     "name email",
@@ -31,7 +34,7 @@ const createProduct = asyncHandler(async (req, res) => {
 const getAllProducts = asyncHandler(async (req, res) => {
   const { category } = req.query;
 
-  // category filtring query generation
+  // Build a case-insensitive category filter only when the query param exists.
   const query = {};
   if (category) {
     query.category = { $regex: category, $options: "i" };
@@ -45,7 +48,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   });
 });
 
-// Get products created by logged in users
+// Get products created by the logged-in user.
 const getMyProdcuts = asyncHandler(async (req, res) => {
   const products = await ProductModel.find({ seller: req.user._id }).populate(
     "seller",
@@ -61,6 +64,8 @@ const getMyProdcuts = asyncHandler(async (req, res) => {
 
 const getSingleProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
+  // Stop early if the route param cannot be used as a MongoDB ObjectId.
   if (!mongoose.Types.ObjectId.isValid())
     throw new appError(400, "invalid product id");
 
@@ -75,8 +80,12 @@ const getSingleProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
   const { name, description, price, category } = req.body;
   const { id } = req.params;
+
+  // Validate the id before doing uploads or database work.
   if (!mongoose.Types.ObjectId.isValid())
     throw new appError(400, "invalid product id");
+
+  // New images are optional; when present, they replace the old image list.
   const images = [];
   if (req.files.length > 0) {
     images = await Promise.all(
@@ -101,6 +110,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
+  // Check the id format before looking up the product.
   if (!mongoose.Types.ObjectId.isValid())
     throw new appError(400, "invalid prodcut ID");
 

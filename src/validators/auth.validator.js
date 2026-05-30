@@ -2,6 +2,7 @@ import { body } from "express-validator";
 import UserModel from "../models/user.model.js";
 import appError from "../utils/appError.js";
 
+// Registration validation also checks for duplicate emails before creation.
 export const registerValidator = [
   body("name")
     .trim()
@@ -15,6 +16,7 @@ export const registerValidator = [
     .isEmail()
     .withMessage("Invalid Email")
     .custom(async (email) => {
+      // Fail fast when another user already owns this email.
       const user = await UserModel.findOne({ email });
       if (user) throw new appError(400, "Email already Exists!");
 
@@ -33,6 +35,7 @@ export const registerValidator = [
   }),
 ];
 
+// Login only requires the credentials needed to authenticate the user.
 export const loginValidator = [
   body("email").isEmail().notEmpty().withMessage("Email is required"),
   body("password").notEmpty().withMessage("passwrod is required"),

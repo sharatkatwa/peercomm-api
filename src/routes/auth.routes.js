@@ -5,7 +5,10 @@ import validate from "../middlewares/validate.middleware.js";
 
 const router = Router()
 
+// Register a new account after validating payload and password confirmation.
 router.post("/register",registerValidator,validate, register)
+
+// Login validates credentials and sets the auth token cookie.
 router.post("/login",loginValidator,validate, login)
 
 export default router

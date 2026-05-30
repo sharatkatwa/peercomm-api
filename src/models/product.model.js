@@ -37,11 +37,13 @@ const productSchema = new mongoose.Schema(
     },
     images: [
       {
+        // ImageKit returns hosted image URLs that are saved with the product.
         type: String,
         trim: true,
       },
     ],
     seller:{
+      // Link each product back to the user who created it.
       type:mongoose.Schema.Types.ObjectId,
       ref:"User",
       required:true

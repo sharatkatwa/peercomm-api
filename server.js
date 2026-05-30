@@ -2,6 +2,7 @@ import './src/config/env.js'
 import app from "./src/app.js";
 import connectDB from "./src/config/db.js";
 
+// Connect to MongoDB before accepting HTTP requests.
 await connectDB();
 
 const PORT = process.env.PORT || 3000;

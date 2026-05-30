@@ -7,6 +7,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
   const { token } = req.cookies;
   if (!token) throw new appError(401, "Unauthorized access");
 
+  // Verify the cookie token and attach the current user to the request.
   const decoded = await jwt.verify(token, process.env.JWT_SECRET);
   // console.log(decoded);
   const user = await UserModel.findById(decoded.id);

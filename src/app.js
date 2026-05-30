@@ -7,24 +7,26 @@ import productRoutes from "./routes/product.routes.js";
 
 const app = express();
 
+// Parse form bodies, JSON payloads, and auth cookies for all routes.
 app.use(express.urlencoded({extended:true}))
 app.use(express.json());
 app.use(cookieParser());
 
-// root api
+// Root health-check endpoint.
 app.get("/", (req, res) => {
   return res.status(200).json({ message: "peerComm api is running..." });
 });
 
-// all main Routes
+// Main feature routes.
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 
-// if sombody hit the route which the server doesn't has then this response will be sent
+// Fallback for unknown endpoints.
 app.use((req, res) => {
   return res.status(404).json({ success: false, message: "Route not Found!" });
 });
 
+// Central error response handler for thrown appError instances and other errors.
 app.use((error, req, res, next) => {
   const statusCode = error.statusCode || 500;
   // console.log(...error.message);
