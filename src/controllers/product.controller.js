@@ -1,7 +1,7 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import ProductModel from "../models/product.model.js";
 import { uploadToImagekit } from "../config/imageKit.js";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import appError from "../utils/appError.js";
 
 const createProduct = asyncHandler(async (req, res) => {
@@ -58,6 +58,7 @@ const getMyProdcuts = asyncHandler(async (req, res) => {
     products,
   });
 });
+
 const getSingleProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid())
@@ -70,8 +71,45 @@ const getSingleProduct = asyncHandler(async (req, res) => {
     .status(200)
     .json({ message: "Product found successfully", product });
 });
-const updateProduct = asyncHandler(async (req, res) => {});
-const deleteProduct = asyncHandler(async (req, res) => {});
+
+const updateProduct = asyncHandler(async (req, res) => {
+  const { name, description, price, category } = req.body;
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid())
+    throw new appError(400, "invalid product id");
+  const images = [];
+  if (req.files.length > 0) {
+    images = await Promise.all(
+      req.files.map((file) => uploadToImagekit(file, user._id)),
+    );
+  }
+  const product = await ProductModel.findById(id);
+  if (!product) throw new appError(404, "product not found");
+
+  product.name = name;
+  product.description = description;
+  product.price = price;
+  product.category = category;
+  if (images.length > 0) product.images = images;
+
+  await product.save();
+
+  return res
+    .status(200)
+    .json({ message: "product updated successfully", product });
+});
+const deleteProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid())
+    throw new appError(400, "invalid prodcut ID");
+
+  const product = await ProductModel.findById(id);
+  if (!product) throw new appError(404, "Product not found");
+
+  await ProductModel.findByIdAndDelete(id);
+  return res.status(200).json({ message: "product deleted successfully" });
+});
 
 export {
   createProduct,

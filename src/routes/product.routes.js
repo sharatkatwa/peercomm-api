@@ -22,10 +22,22 @@ router.post(
   validate,
   createProduct,
 );
+
 router.get("/", getAllProducts);
+
 router.get("/my", authMiddleware, getMyProdcuts);
+
 router.get("/:id", getSingleProduct);
-router.put("/:id",authMiddleware, updateProduct);
-router.delete("/:id",authMiddleware, deleteProduct);
+
+router.put(
+  "/:id",
+  authMiddleware,
+  upload.array("images", 5),
+  productValidators,
+  validate,
+  updateProduct,
+);
+
+router.delete("/:id", authMiddleware, deleteProduct);
 
 export default router;
